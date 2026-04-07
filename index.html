@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Monster Clicker - Idle Slayer</title>
+    <style>
+        body { 
+            text-align: center; 
+            font-family: Arial, sans-serif; 
+            background: linear-gradient(#1a0f2e, #0f051a); 
+            color: #bb86fc; 
+            margin: 0; 
+            padding: 20px;
+        }
+        #clicker { 
+            font-size: 140px; 
+            cursor: pointer; 
+            user-select: none; 
+            transition: transform 0.1s;
+            text-shadow: 0 0 30px #ff00ff;
+        }
+        #clicker:active { transform: scale(0.78); }
+        .container { max-width: 680px; margin: 0 auto; }
+        button { 
+            padding: 15px 30px; 
+            font-size: 20px; 
+            margin: 15px; 
+            background: #3700b3; 
+            color: #ffffff; 
+            border: 3px solid #03dac6; 
+            border-radius: 8px; 
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover { background: #6200ee; }
+        .news { 
+            margin-top: 40px; 
+            font-style: italic; 
+            min-height: 1.8em; 
+            color: #cf6679;
+            border-top: 3px solid #03dac6;
+            padding-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>MONSTER CLICKER </h1>
+        
+        <div id="clicker">🐉</div>  <!-- Big monster to smash - change emoji if you want a specific beast -->
+        
+        <p><strong>Essence collected:</strong> <span id="essence">0</span></p>
+        <p><strong>Essence per second:</strong> <span id="eps">0</span></p>
+        
+        <button onclick="hireSlayer()">Hire Slayer (Cost: <span id="slayerCost">30</span>)</button>
+        <p>Slayers: <span id="slayers">0</span></p>
+
+        <div class="news" id="news">A wild goblin appears in the forest. Time to hunt...</div>
+    </div>
+
+    <script>
+        let essence = 0;
+        let slayers = 0;
+        let slayerCost = 30;
+        let eps = 0;
+
+        // Big clickable monster
+        document.getElementById("clicker").addEventListener("click", () => {
+            essence += 1;
+            updateDisplay();
+            createFloatingText("+1", "#ff00ff");
+        });
+
+        function hireSlayer() {
+            if (essence >= slayerCost) {
+                essence -= slayerCost;
+                slayers++;
+                slayerCost = Math.floor(slayerCost * 1.15); // scaling cost
+                updateDisplay();
+            }
+        }
+
+        function updateDisplay() {
+            document.getElementById("essence").textContent = Math.floor(essence);
+            document.getElementById("slayers").textContent = slayers;
+            document.getElementById("slayerCost").textContent = slayerCost;
+            document.getElementById("eps").textContent = slayers;
+        }
+
+        // Floating damage numbers
+        function createFloatingText(text, color) {
+            const float = document.createElement("div");
+            float.textContent = text;
+            float.style.position = "absolute";
+            float.style.left = "50%";
+            float.style.top = "35%";
+            float.style.color = color;
+            float.style.fontSize = "40px";
+            float.style.fontWeight = "bold";
+            float.style.pointerEvents = "none";
+            float.style.transition = "all 1.6s";
+            float.style.opacity = "1";
+            document.body.appendChild(float);
+
+            setTimeout(() => {
+                float.style.transform = "translateY(-160px) scale(1.1)";
+                float.style.opacity = "0";
+            }, 10);
+
+            setTimeout(() => float.remove(), 1700);
+        }
+
+        // Idle monster hunting
+        setInterval(() => {
+            essence += slayers;
+            updateDisplay();
+        }, 1000);
+
+        // Epic monster news ticker
+        const newsMessages = [
+            "A dragon was spotted burning the countryside. Your slayers are on it.",
+            "Goblin raid repelled — their gold is now your essence.",
+            "The beast roared louder than thunder... until the blade hit.",
+            "New monster discovered: it has three heads and zero chill.",
+            "Slayer report: 'That thing was ugly... but the loot was beautiful.'",
+            "The dungeon pulses with dark energy. More essence awaits.",
+            "Local village thanks you — they no longer fear the night."
+        ];
+
+        let newsIndex = 0;
+        setInterval(() => {
+            newsIndex = (newsIndex + 1) % newsMessages.length;
+            document.getElementById("news").textContent = newsMessages[newsIndex];
+        }, 7000);
+    </script>
+</body>
+</html>
