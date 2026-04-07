@@ -2,136 +2,294 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Monster Clicker - Idle Slayer</title>
+    <title>Monsters Energy</title>
     <style>
-        body { 
-            text-align: center; 
-            font-family: Arial, sans-serif; 
-            background: linear-gradient(#1a0f2e, #0f051a); 
-            color: #bb86fc; 
-            margin: 0; 
-            padding: 20px;
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            padding: 0;
+            background: #1c140f;
+            font-family: "Trebuchet MS", Arial, sans-serif;
+            color: #d4af37;
         }
-        #clicker { 
-            font-size: 140px; 
-            cursor: pointer; 
-            user-select: none; 
-            transition: transform 0.1s;
-            text-shadow: 0 0 30px #ff00ff;
-        }
-        #clicker:active { transform: scale(0.78); }
-        .container { max-width: 680px; margin: 0 auto; }
-        button { 
-            padding: 15px 30px; 
-            font-size: 20px; 
-            margin: 15px; 
-            background: #3700b3; 
-            color: #ffffff; 
-            border: 3px solid #03dac6; 
-            border-radius: 8px; 
-            cursor: pointer;
+
+        .top-bar {
+            background: #3c2a1f;
+            border-bottom: 6px solid #8b5a2b;
+            padding: 8px 20px;
+            display: flex;
+            align-items: center;
+            font-size: 18px;
             font-weight: bold;
+            gap: 15px;
         }
-        button:hover { background: #6200ee; }
-        .news { 
-            margin-top: 40px; 
-            font-style: italic; 
-            min-height: 1.8em; 
-            color: #cf6679;
-            border-top: 3px solid #03dac6;
-            padding-top: 15px;
+        .top-button {
+            cursor: pointer;
+            padding: 6px 16px;
+            border: 2px solid #8b5a2b;
+            background: #2c1f14;
+        }
+        .top-button:hover { background: #5c4635; }
+        .news-ticker {
+            flex: 1;
+            background: #2c1f14;
+            border: 4px solid #8b5a2b;
+            padding: 8px 15px;
+            font-style: italic;
+            color: #ffcc66;
+            text-align: center;
+            min-height: 38px;
+            cursor: pointer;
+        }
+
+        .game-container {
+            display: flex;
+            height: calc(100vh - 68px);
+        }
+
+        /* LEFT PANEL - Image moved down, text right under it */
+        .left-panel {
+            width: 360px;
+            background: #2c1f14;
+            border-right: 8px solid #8b5a2b;
+            padding: 15px;
+            text-align: center;
+        }
+        #clicker {
+            font-size: 195px;
+            cursor: pointer;
+            transition: transform 0.08s;
+            filter: drop-shadow(0 0 40px #39ff14);
+            margin: 20px 0 25px 0;   /* Increased bottom margin to push text down */
+            line-height: 1;
+        }
+        #clicker:active { transform: scale(0.85); }
+
+        .energy-total {
+            font-size: 48px;
+            font-weight: bold;
+            color: #ffffff;
+            margin: 0 0 8px 0;
+            text-shadow: 0 0 12px #00ff41;
+        }
+        .energy-per-second {
+            font-size: 26px;
+            color: #00ff41;
+            margin: 0;
+        }
+
+        .bakery-name {
+            font-size: 32px;
+            color: #00ff41;
+            text-shadow: 0 0 15px #00ff41;
+            cursor: pointer;
+            margin-bottom: 8px;
+        }
+
+        /* Other panels */
+        .middle-panel {
+            flex: 1;
+            background: #2c1f14;
+            padding: 15px;
+            overflow-y: auto;
+        }
+        .building {
+            background: #3c2a1f;
+            border: 4px solid #8b5a2b;
+            margin-bottom: 12px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        .building:hover { background: #4a3728; border-color: #d4af37; }
+        .building-icon { font-size: 60px; width: 80px; text-align: center; }
+
+        .right-panel {
+            width: 290px;
+            background: #2c1f14;
+            padding: 15px;
+            overflow-y: auto;
+            border-left: 8px solid #8b5a2b;
+        }
+        .store-title { 
+            text-align: center; 
+            color: #00ff41; 
+            font-size: 26px; 
+            margin-bottom: 15px; 
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>MONSTER CLICKER </h1>
-        
-        <div id="clicker">🐉</div>  <!-- Big monster to smash - change emoji if you want a specific beast -->
-        
-        <p><strong>Essence collected:</strong> <span id="essence">0</span></p>
-        <p><strong>Essence per second:</strong> <span id="eps">0</span></p>
-        
-        <button onclick="hireSlayer()">Hire Slayer (Cost: <span id="slayerCost">30</span>)</button>
-        <p>Slayers: <span id="slayers">0</span></p>
 
-        <div class="news" id="news">A wild goblin appears in the forest. Time to hunt...</div>
+    <div class="top-bar">
+        <div class="top-button" onclick="alert('Options coming soon!')">Options</div>
+        <div class="top-button" onclick="showStats()">Stats</div>
+        <div class="news-ticker" id="news" onclick="nextNews()">UNLEASH THE BEAST — First can cracked open!</div>
+        <div class="top-button" onclick="alert('Info coming soon!')">Info</div>
+        <div class="top-button" onclick="alert('Ascension coming soon!')">Ascension</div>
+    </div>
+
+    <div class="game-container">
+
+        <!-- LEFT PANEL -->
+        <div class="left-panel">
+            <div id="bakeryName" class="bakery-name" onclick="showNameModal()">Monsters Energy</div>
+            
+            <!-- Clickable area moved down a bit -->
+            <div id="clicker">⚡</div>
+            
+            <!-- Text now directly under the image -->
+            <div class="energy-total">Energy: <span id="energy">0</span></div>
+            <div class="energy-per-second">Per second: <span id="eps">0</span></div>
+        </div>
+
+        <!-- MIDDLE - Buildings -->
+        <div class="middle-panel" id="buildings"></div>
+
+        <!-- RIGHT - Store -->
+        <div class="right-panel">
+            <div class="store-title">STORE</div>
+            <div style="background:#3c2a1f;border:4px solid #8b5a2b;padding:12px;margin-bottom:12px;cursor:pointer;" onclick="buyClickUpgrade()">
+                <strong>Taurine Injection</strong><br>
+                +1 click power<br>
+                Cost: <span id="clickUpgradeCost">150</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Name Modal -->
+    <div id="nameModal" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);display:none;align-items:center;justify-content:center;z-index:1000;">
+        <div style="background:#2c1f14;border:6px solid #8b5a2b;padding:25px;width:420px;text-align:center;color:#d4af37;">
+            <h2>NAME YOUR ENERGY EMPIRE</h2>
+            <p>What should it be called?</p>
+            <input type="text" id="nameInput" value="Monsters Energy" style="width:100%;padding:10px;font-size:18px;margin:15px 0;background:#1c140f;color:#ffcc66;border:3px solid #8b5a2b;">
+            <div>
+                <button onclick="confirmName()" style="padding:10px 20px;margin:5px;background:#3c2a1f;color:#d4af37;border:3px solid #8b5a2b;cursor:pointer;">Confirm</button>
+                <button onclick="randomName()" style="padding:10px 20px;margin:5px;background:#3c2a1f;color:#d4af37;border:3px solid #8b5a2b;cursor:pointer;">Random</button>
+                <button onclick="closeModal()" style="padding:10px 20px;margin:5px;background:#3c2a1f;color:#d4af37;border:3px solid #8b5a2b;cursor:pointer;">Cancel</button>
+            </div>
+        </div>
     </div>
 
     <script>
-        let essence = 0;
-        let slayers = 0;
-        let slayerCost = 30;
-        let eps = 0;
+        let energy = 0;
+        let clickPower = 1;
+        let bakeryName = "Monsters Energy";
 
-        // Big clickable monster
-        document.getElementById("clicker").addEventListener("click", () => {
-            essence += 1;
-            updateDisplay();
-            createFloatingText("+1", "#ff00ff");
-        });
+        let buildings = [
+            { name: "Canner", icon: "🏭", count: 0, baseCost: 45, production: 1 },
+            { name: "Flavor Lab", icon: "🧪", count: 0, baseCost: 120, production: 4 },
+            { name: "Monster Truck", icon: "🚚", count: 0, baseCost: 450, production: 12 }
+        ];
 
-        function hireSlayer() {
-            if (essence >= slayerCost) {
-                essence -= slayerCost;
-                slayers++;
-                slayerCost = Math.floor(slayerCost * 1.15); // scaling cost
+        let newsMessages = [
+            "UNLEASH THE BEAST — First can cracked open!",
+            "New flavor dropped. The claw is glowing!",
+            "Factory running at full power."
+        ];
+        let newsIndex = 0;
+
+        function nextNews() {
+            newsIndex = (newsIndex + 1) % newsMessages.length;
+            document.getElementById("news").textContent = newsMessages[newsIndex];
+        }
+
+        function renderBuildings() {
+            const container = document.getElementById("buildings");
+            container.innerHTML = "";
+            buildings.forEach((b, i) => {
+                const cost = Math.floor(b.baseCost * Math.pow(1.15, b.count));
+                const div = document.createElement("div");
+                div.className = "building";
+                div.innerHTML = `
+                    <div class="building-icon">${b.icon}</div>
+                    <div style="flex:1">
+                        <div style="font-size:22px;font-weight:bold;">${b.name}</div>
+                        <div>Owned: <span style="color:#00ff41">${b.count}</span></div>
+                        <div>Produces: ${b.production} /sec</div>
+                        <div>Cost: ${cost}</div>
+                    </div>
+                `;
+                div.onclick = () => buyBuilding(i);
+                container.appendChild(div);
+            });
+        }
+
+        function buyBuilding(index) {
+            const b = buildings[index];
+            const cost = Math.floor(b.baseCost * Math.pow(1.15, b.count));
+            if (energy >= cost) {
+                energy -= cost;
+                b.count++;
+                renderBuildings();
+                updateDisplay();
+            }
+        }
+
+        function buyClickUpgrade() {
+            let cost = parseInt(document.getElementById("clickUpgradeCost").textContent);
+            if (energy >= cost) {
+                energy -= cost;
+                clickPower += 1;
+                document.getElementById("clickUpgradeCost").textContent = Math.floor(cost * 1.8);
                 updateDisplay();
             }
         }
 
         function updateDisplay() {
-            document.getElementById("essence").textContent = Math.floor(essence);
-            document.getElementById("slayers").textContent = slayers;
-            document.getElementById("slayerCost").textContent = slayerCost;
-            document.getElementById("eps").textContent = slayers;
+            document.getElementById("energy").textContent = Math.floor(energy).toLocaleString();
+            let total = buildings.reduce((sum, b) => sum + b.count * b.production, 0);
+            document.getElementById("eps").textContent = total;
         }
 
-        // Floating damage numbers
-        function createFloatingText(text, color) {
+        // Click handler
+        document.getElementById("clicker").addEventListener("click", () => {
+            energy += clickPower;
+            updateDisplay();
+
             const float = document.createElement("div");
-            float.textContent = text;
-            float.style.position = "absolute";
-            float.style.left = "50%";
-            float.style.top = "35%";
-            float.style.color = color;
-            float.style.fontSize = "40px";
-            float.style.fontWeight = "bold";
-            float.style.pointerEvents = "none";
-            float.style.transition = "all 1.6s";
-            float.style.opacity = "1";
+            float.textContent = `+${clickPower}`;
+            float.style.cssText = `position:absolute; left:150px; top:280px; color:#39ff14; font-size:42px; font-weight:bold; pointer-events:none; transition:all 1.4s; text-shadow:0 0 15px #39ff14;`;
             document.body.appendChild(float);
+            setTimeout(() => { float.style.transform = "translateY(-160px)"; float.style.opacity = "0"; }, 10);
+            setTimeout(() => float.remove(), 1500);
+        });
 
-            setTimeout(() => {
-                float.style.transform = "translateY(-160px) scale(1.1)";
-                float.style.opacity = "0";
-            }, 10);
-
-            setTimeout(() => float.remove(), 1700);
-        }
-
-        // Idle monster hunting
+        // Idle production
         setInterval(() => {
-            essence += slayers;
+            let total = buildings.reduce((sum, b) => sum + b.count * b.production, 0);
+            energy += total;
             updateDisplay();
         }, 1000);
 
-        // Epic monster news ticker
-        const newsMessages = [
-            "A dragon was spotted burning the countryside. Your slayers are on it.",
-            "Goblin raid repelled — their gold is now your essence.",
-            "The beast roared louder than thunder... until the blade hit.",
-            "New monster discovered: it has three heads and zero chill.",
-            "Slayer report: 'That thing was ugly... but the loot was beautiful.'",
-            "The dungeon pulses with dark energy. More essence awaits.",
-            "Local village thanks you — they no longer fear the night."
-        ];
+        // Name modal
+        function showNameModal() {
+            document.getElementById("nameModal").style.display = "flex";
+            document.getElementById("nameInput").value = bakeryName;
+        }
+        function confirmName() {
+            bakeryName = document.getElementById("nameInput").value.trim() || "Monsters Energy";
+            document.getElementById("bakeryName").textContent = bakeryName;
+            closeModal();
+        }
+        function randomName() {
+            const names = ["Monsters Energy", "Claw Fuel", "Beast Brew", "Green Monster Co.", "Unleash Energy"];
+            bakeryName = names[Math.floor(Math.random()*names.length)];
+            document.getElementById("nameInput").value = bakeryName;
+        }
+        function closeModal() {
+            document.getElementById("nameModal").style.display = "none";
+        }
 
-        let newsIndex = 0;
-        setInterval(() => {
-            newsIndex = (newsIndex + 1) % newsMessages.length;
-            document.getElementById("news").textContent = newsMessages[newsIndex];
-        }, 7000);
+        function showStats() {
+            let totalProd = buildings.reduce((sum, b) => sum + b.count * b.production, 0);
+            alert(`Company: ${bakeryName}\nTotal Energy: ${Math.floor(energy)}\nPer second: ${totalProd}\nClick Power: ${clickPower}`);
+        }
+
+        // Initialize
+        renderBuildings();
+        updateDisplay();
     </script>
 </body>
 </html>
